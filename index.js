@@ -22,6 +22,7 @@ async function run() {
   try {
     await client.connect();
     const booksCollection = client.db("storeBooks").collection("books");
+    const reviewCollection = client.db("reviews").collection("review");
 
     // Load all book api
     app.get("/books", async (req, res) => {
@@ -88,6 +89,28 @@ async function run() {
       );
       res.send(result);
     });
+    // Load reviews data api
+    app.get("/reviews", async (req, res) => {
+      const query = {};
+      const page = parseInt(req.query.page);
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor
+        .skip(page * 3)
+        .limit(3)
+        .toArray();
+      res.send(reviews);
+    });
+    // Post review api
+    app.post("/review", async (req, res) => {
+      const newReview = req.body;
+      const result = await reviewCollection.insertOne(newReview);
+      res.send(result);
+    });
+    // Count Reviews
+    app.get("/reviewCount", async (req, res) => {
+      const count = await reviewCollection.estimatedDocumentCount();
+      res.send({ count });
+    });
   } finally {
   }
 }
@@ -101,3 +124,5 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log("Listening to port", port);
 });
+
+// 7216 109171
