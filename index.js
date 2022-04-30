@@ -23,9 +23,70 @@ async function run() {
     await client.connect();
     const booksCollection = client.db("storeBooks").collection("books");
 
-    // test api
-    app.get("/books", (req, res) => {
-      res.send({ bookName: "all-Quran" });
+    // Load all book api
+    app.get("/books", async (req, res) => {
+      const query = {};
+      const cursor = booksCollection.find(query);
+      const services = await cursor.toArray();
+      res.send(services);
+    });
+
+    // load single book api
+    app.get("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await booksCollection.findOne(query);
+      res.send(result);
+    });
+
+    // POST Book API
+    app.post("/book", async (req, res) => {
+      const newBook = req.body;
+      const result = await booksCollection.insertOne(newBook);
+      res.send(result);
+    });
+
+    // DELETE book api
+    app.delete("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await booksCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // update single proparty of book
+    app.put("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedBook = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          stockQuantity: updatedBook.stockQuantity,
+        },
+      };
+      const result = await booksCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
+    // update Multiple proparty of book
+    app.put("/bookupdate/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedBook = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: updatedBook,
+      };
+      const result = await booksCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
     });
   } finally {
   }
