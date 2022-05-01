@@ -31,6 +31,14 @@ async function run() {
       const services = await cursor.toArray();
       res.send(services);
     });
+    // Load book by text
+    app.get("/bookbytext", async (req, res) => {
+      const text = req.query.search;
+      const query = {};
+      const cursor = booksCollection.find();
+      const books = await cursor.toArray();
+      res.send(books);
+    });
 
     // load single book api
     app.get("/book/:id", async (req, res) => {
@@ -73,6 +81,7 @@ async function run() {
       );
       res.send(result);
     });
+
     // update Multiple proparty of book
     app.put("/bookupdate/:id", async (req, res) => {
       const id = req.params.id;
@@ -89,6 +98,7 @@ async function run() {
       );
       res.send(result);
     });
+
     // Load reviews data api
     app.get("/reviews", async (req, res) => {
       const query = {};
@@ -112,6 +122,7 @@ async function run() {
       res.send({ count });
     });
   } finally {
+    // await client.close();
   }
 }
 
