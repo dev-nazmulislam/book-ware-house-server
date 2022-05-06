@@ -31,6 +31,14 @@ async function run() {
       const services = await cursor.toArray();
       res.send(services);
     });
+    // Load user spacific data
+    app.get("/userbooks", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = booksCollection.find(query);
+      const services = await cursor.toArray();
+      res.send(services);
+    });
     // Load book by text
     app.get("/bookbytext", async (req, res) => {
       const text = req.query.search;
