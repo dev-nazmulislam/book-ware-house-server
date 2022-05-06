@@ -28,16 +28,17 @@ async function run() {
     app.get("/books", async (req, res) => {
       const query = {};
       const cursor = booksCollection.find(query);
-      const services = await cursor.toArray();
-      res.send(services);
+      const result = await cursor.toArray();
+      res.send(result);
     });
     // Load user spacific data
-    app.get("/userbooks", async (req, res) => {
+    app.get("/book", async (req, res) => {
       const email = req.query.email;
+      console.log(email);
       const query = { email: email };
       const cursor = booksCollection.find(query);
-      const services = await cursor.toArray();
-      res.send(services);
+      const result = await cursor.toArray();
+      res.send(result);
     });
     // Load book by text
     app.get("/bookbytext", async (req, res) => {
