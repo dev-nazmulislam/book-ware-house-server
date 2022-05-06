@@ -134,7 +134,7 @@ async function run() {
     });
 
     // Load History API
-    app.get("/history", async (req, res) => {
+    app.get("/histories", async (req, res) => {
       const query = {};
       const cursor = historyCollection.find(query);
       const result = await cursor.toArray();
@@ -142,7 +142,7 @@ async function run() {
     });
 
     // POST History API
-    app.post("/history", async (req, res) => {
+    app.post("/histories", async (req, res) => {
       const newHistory = req.body;
       const result = await historyCollection.insertOne(newHistory);
       res.send(result);
