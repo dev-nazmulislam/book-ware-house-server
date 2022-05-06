@@ -23,6 +23,7 @@ async function run() {
     await client.connect();
     const booksCollection = client.db("storeBooks").collection("books");
     const reviewCollection = client.db("reviews").collection("review");
+    const historyCollection = client.db("histories").collection("history");
 
     // Load all book api
     app.get("/books", async (req, res) => {
@@ -31,7 +32,16 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    // Load user spacific data
+
+    // load single book api
+    app.get("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await booksCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Load user email spacific data
     app.get("/book", async (req, res) => {
       const email = req.query.email;
       console.log(email);
@@ -47,14 +57,6 @@ async function run() {
       const cursor = booksCollection.find();
       const books = await cursor.toArray();
       res.send(books);
-    });
-
-    // load single book api
-    app.get("/book/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await booksCollection.findOne(query);
-      res.send(result);
     });
 
     // POST Book API
@@ -130,6 +132,21 @@ async function run() {
       const count = await reviewCollection.estimatedDocumentCount();
       res.send({ count });
     });
+
+    // Load History API
+    app.get("/history", async (req, res) => {
+      const query = {};
+      const cursor = historyCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // POST History API
+    app.post("/history", async (req, res) => {
+      const newHistory = req.body;
+      const result = await historyCollection.insertOne(newHistory);
+      res.send(result);
+    });
   } finally {
     // await client.close();
   }
@@ -144,5 +161,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log("Listening to port", port);
 });
-
-// 7216 109171
