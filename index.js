@@ -44,7 +44,6 @@ async function run() {
     // Load user email spacific data
     app.get("/book", async (req, res) => {
       const email = req.query.email;
-      console.log(email);
       const query = { email: email };
       const cursor = booksCollection.find(query);
       const result = await cursor.toArray();
