@@ -80,9 +80,7 @@ async function run() {
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updatedDoc = {
-        $set: {
-          stockQuantity: updatedBook.stockQuantity,
-        },
+        $set: updatedBook,
       };
       const result = await booksCollection.updateOne(
         filter,
